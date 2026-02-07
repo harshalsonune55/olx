@@ -1,0 +1,14 @@
+<h1 class="text-2xl font-bold mb-4">🛒 Your Cart</h1>
+<% if (ads.length === 0) { %>
+  <p>No items in cart.</p>
+<% } else { %>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <% ads.forEach(ad => { %>
+      <div class="bg-white p-4 rounded shadow">
+        <img src="<%= ad.image %>" alt="" class="h-48 w-full object-cover rounded mb-2">
+        <h2 class="font-bold"><%= ad.title %></h2>
+        <p class="text-green-600 font-semibold">₹<%= ad.price %></p>
+      </div>
+    <% }) %>
+  </div>
+<% } %>

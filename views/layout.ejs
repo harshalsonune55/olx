@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OLX Clone</title>
+  <link href="/tailwind.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/tailwind.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+  
+  <!-- Header with Navbar -->
+  <header class="bg-white shadow">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+      
+      <!-- Logo -->
+      <a href="/" class="text-2xl font-bold text-blue-600">OLX Clone</a>
+
+      <!-- Right Side Nav -->
+      <div class="flex items-center gap-6">
+
+        <!-- Show Post Ad for all -->
+        <a href="/ads/new" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+          + Post Ad
+        </a>
+
+        <% if (!currentUser) { %>
+          <!-- If not logged in -->
+          <a href="/login" class="text-blue-600 font-medium hover:underline">Login</a>
+          <a href="/register" class="text-blue-600 font-medium hover:underline">Register</a>
+        <% } else { %>
+          <!-- If logged in -->
+          <div class="flex items-center gap-4">
+
+            <!-- Icons -->
+            <a href="/profile" title="Profile" class="text-gray-600 hover:text-blue-600 text-xl">
+              <i class="fas fa-user-circle"></i>
+            </a>
+
+            <a href="/cart" title="Cart" class="text-gray-600 hover:text-blue-600 text-xl">
+              <i class="fas fa-shopping-cart"></i>
+            </a>
+
+            <a href="/orders" title="Orders" class="text-gray-600 hover:text-blue-600 text-xl">
+              <i class="fas fa-box"></i>
+            </a>
+
+            <!-- Welcome Text + Logout -->
+            <span class="text-sm font-large text-gray-700">Hi, <%= currentUser.username %></span>
+            <a href="/logout" class="bg-red-600 text-white px-4 py-3 rounded hover:bg-red-700 transition text-sm">Logout</a>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Body -->
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    <%- body %>
+  </main>
+</body>
+</html>
