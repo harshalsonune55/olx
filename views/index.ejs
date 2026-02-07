@@ -1,39 +1,35 @@
-
-  
-  
 <section class="mb-10">
-    <div class="flex justify-between items-center mb-4 px-2">
-      <h2 class="text-2xl font-semibold">Popular Products in MITAOE campus</h2>
-      <span class="text-xl">→</span>
-    </div>
-  
-    <!-- Horizontal Scrollable Cards -->
-    <div class="flex space-x-4 overflow-x-auto scrollbar-hide px-2">
-      <% ads.forEach(ad => { %>
-        <a href="/ads/<%= ad._id %>" 
-            class="flex-shrink-0 w-72 bg-white rounded-2xl shadow hover:shadow-lg hover:scale-[1.02] transition-all block">
-         
-          <div class="relative h-48 rounded-t-2xl overflow-hidden">
-            <img src="<%= ad.image %>" alt="<%= ad.title %>" class="w-full h-full object-cover" />
-  
-            <!-- Badge -->
-            <span class="absolute top-2 left-2 bg-white text-xs font-medium px-2 py-1 rounded-full shadow">
-              Guest favourite
-            </span>
-  
-            <!-- Heart Button -->
-            <button class="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:scale-105 transition">
-              ❤️
-            </button>
-          </div>
-  
-          <div class="p-4">
-            <h3 class="font-semibold text-sm text-gray-800 truncate"><%= ad.title %></h3>
-            <p class="text-gray-500 text-sm truncate">₹<%= ad.price %> for 2 nights</p>
-            <p class="text-yellow-500 text-sm">★ 4.9</p>
-          </div>
-        </a>
-      <% }) %>
-    </div>
-  </section>
-  
+  <div class="flex justify-between items-center mb-6 px-4">
+    <h2 class="text-2xl font-semibold">Popular Products in MITAOE Campus</h2>
+    <span class="text-xl cursor-pointer">→</span>
+  </div>
+
+  <!-- Grid layout like Airbnb -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
+    <% ads.forEach(ad => { %>
+      <a href="/ads/<%= ad._id %>" 
+         class="bg-white rounded-2xl shadow hover:shadow-lg transition-transform hover:scale-105 overflow-hidden block">
+
+        <div class="relative h-48">
+          <img src="<%= ad.image %>" alt="<%= ad.title %>" class="w-full h-full object-cover" />
+
+          <!-- Badge -->
+          <span class="absolute top-2 left-2 bg-white text-xs font-medium px-2 py-1 rounded-full shadow">
+            Guest favourite
+          </span>
+
+          <!-- Heart Button -->
+          <button class="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:scale-110 transition">
+            ❤️
+          </button>
+        </div>
+
+        <div class="p-4">
+          <h3 class="text-sm font-semibold text-gray-800 truncate"><%= ad.title %></h3>
+          <p class="text-sm text-gray-500 truncate">₹<%= ad.price %> for 2 nights</p>
+          <p class="text-sm text-yellow-500 mt-1">★ 4.9</p>
+        </div>
+      </a>
+    <% }) %>
+  </div>
+</section>
