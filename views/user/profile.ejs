@@ -1,3 +1,41 @@
-<h1 class="text-2xl font-bold mb-4">👤 Profile</h1>
-<p><strong>Username:</strong> <%= user.username %></p>
-<p><strong>User ID:</strong> <%= user._id %></p>
+<div class="min-h-screen bg-gray-100 px-4 py-8 flex items-center justify-center">
+    <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8 space-y-6">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-bold text-blue-600 flex items-center gap-2">
+          👤 Profile
+        </h1>
+        <a href="/profile/edit" class="text-blue-600 hover:underline font-semibold">Edit Profile</a>
+      </div>
+  
+      <!-- Basic Info -->
+      <div class="space-y-2 text-gray-700">
+        <p><strong>Username:</strong> <%= user.username %></p>
+        <p><strong>User ID:</strong> <%= user._id %></p>
+        <% if (user.email) { %>
+          <p><strong>Email:</strong> <%= user.email %></p>
+        <% } %>
+        <% if (user.college) { %>
+          <p><strong>College:</strong> <%= user.college %></p>
+        <% } %>
+        <% if (user.major) { %>
+          <p><strong>Major:</strong> <%= user.major %></p>
+        <% } %>
+        <% if (user.year) { %>
+          <p><strong>Year:</strong> <%= user.year %></p>
+        <% } %>
+        <% if (user.studentId) { %>
+          <p><strong>Student ID:</strong> <%= user.studentId %></p>
+        <% } %>
+      </div>
+  
+      <!-- Button -->
+      <div class="pt-4">
+        <a href="/dashboard" class="inline-block bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition">
+          ← Back to Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+  

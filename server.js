@@ -53,5 +53,6 @@ app.use('/', adRoutes);
 app.use('/', authRoutes);
 app.use('/', userRoutes);
 
+
 // Start server
 app.listen(3000, () => console.log('Server running on http://localhost:3000'));
