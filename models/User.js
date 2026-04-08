@@ -5,8 +5,6 @@ const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      required: true,
-      unique: true,
       trim: true
     },
 
@@ -18,7 +16,14 @@ const userSchema = new mongoose.Schema(
 
     password: {
       type: String,
-      required: true
+      required: function () {
+        return !this.googleId; // ✅ Only required if NOT Google user
+      }
+    },
+
+    // ✅ ADD THIS
+    googleId: {
+      type: String
     },
 
     // 👇 Profile fields
@@ -50,31 +55,35 @@ const userSchema = new mongoose.Schema(
     },
 
     avatar: {
-      type: String, // image URL (future‑proof)
+      type: String,
       default: ''
     },
 
-    // 👇 System fields
     role: {
       type: String,
       enum: ['user', 'admin'],
       default: 'user'
     }
   },
-  { timestamps: true } // adds createdAt & updatedAt
+  { timestamps: true }
 );
 
-
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+// =======================
+// ✅ HASH PASSWORD (NO CHANGE)
+// =======================
+userSchema.pre('save', async function () {
+  if (!this.isModified('password') || !this.password) return;
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
-  next();
 });
 
+// =======================
+// ✅ MATCH PASSWORD (SAFE)
+// =======================
 userSchema.methods.matchPassword = async function (password) {
+  if (!this.password) return false; // Google users won't have password
   return await bcrypt.compare(password, this.password);
 };
-module.exports = mongoose.model('User', userSchema);
 
+module.exports = mongoose.model('User', userSchema);
