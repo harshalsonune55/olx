@@ -1,35 +1,83 @@
 <section class="mb-10">
+
+  <!-- 🔍 SEARCH + FILTER BAR -->
+  <div class="flex flex-col md:flex-row gap-4 px-4 mb-6">
+
+    <!-- Search -->
+    <input 
+      type="text" 
+      id="searchInput"
+      placeholder="Search products..."
+      class="flex-1 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+    />
+
+    <!-- Price Filter -->
+    <select id="priceFilter" class="px-4 py-3 border rounded-xl">
+      <option value="">All Prices</option>
+      <option value="low">Below ₹1000</option>
+      <option value="mid">₹1000 - ₹5000</option>
+      <option value="high">Above ₹5000</option>
+    </select>
+
+  </div>
+
+  <!-- Title -->
   <div class="flex justify-between items-center mb-6 px-4">
     <h2 class="text-2xl font-semibold">Popular Products in MITAOE Campus</h2>
     <span class="text-xl cursor-pointer">→</span>
   </div>
 
-  <!-- Grid layout like Airbnb -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
+  <!-- 🛍 PRODUCTS -->
+  <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
+
     <% ads.forEach(ad => { %>
       <a href="/ads/<%= ad._id %>" 
-         class="bg-white rounded-2xl shadow hover:shadow-lg transition-transform hover:scale-105 overflow-hidden block">
+         class="product-card bg-white rounded-2xl shadow hover:shadow-lg transition hover:scale-105 overflow-hidden block"
+         data-title="<%= ad.title.toLowerCase() %>"
+         data-price="<%= ad.price %>">
 
         <div class="relative h-48">
-          <img src="<%= ad.image %>" alt="<%= ad.title %>" class="w-full h-full object-cover" />
-
-          <!-- Badge -->
-          <span class="absolute top-2 left-2 bg-white text-xs font-medium px-2 py-1 rounded-full shadow">
-            Guest favourite
-          </span>
-
-          <!-- Heart Button -->
-          <button class="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:scale-110 transition">
-            ❤️
-          </button>
+          <img src="<%= ad.image %>" class="w-full h-full object-cover" />
         </div>
 
         <div class="p-4">
           <h3 class="text-sm font-semibold text-gray-800 truncate"><%= ad.title %></h3>
-          <p class="text-sm text-gray-500 truncate">₹<%= ad.price %> for 2 nights</p>
-          <p class="text-sm text-yellow-500 mt-1">★ 4.9</p>
+          <p class="text-sm text-gray-500">₹<%= ad.price %></p>
         </div>
       </a>
     <% }) %>
+
   </div>
 </section>
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const priceFilter = document.getElementById('priceFilter');
+  const products = document.querySelectorAll('.product-card');
+
+  function filterProducts() {
+    const searchValue = searchInput.value.toLowerCase();
+    const priceValue = priceFilter.value;
+
+    products.forEach(product => {
+      const title = product.dataset.title;
+      const price = parseInt(product.dataset.price);
+
+      let matchSearch = title.includes(searchValue);
+      let matchPrice = true;
+
+      if (priceValue === 'low') matchPrice = price < 1000;
+      else if (priceValue === 'mid') matchPrice = price >= 1000 && price <= 5000;
+      else if (priceValue === 'high') matchPrice = price > 5000;
+
+      if (matchSearch && matchPrice) {
+        product.style.display = "block";
+      } else {
+        product.style.display = "none";
+      }
+    });
+  }
+
+  searchInput.addEventListener('input', filterProducts);
+  priceFilter.addEventListener('change', filterProducts);
+</script>

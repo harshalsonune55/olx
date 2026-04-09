@@ -43,6 +43,7 @@ app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   next();
 });
+app.set('trust proxy', 1);
 
 // Routes
 const adRoutes = require('./routes/ads');
