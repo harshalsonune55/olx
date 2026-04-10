@@ -12,6 +12,10 @@ const adSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  isDonation: {
+    type: Boolean,
+    default: false
   }
 });
 

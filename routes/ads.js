@@ -8,15 +8,21 @@ router.get('/', async (req, res) => {
   res.render('index', { ads });
 });
 
-// Show form
-router.get('/ads/new', (req, res) => {
-  res.render('new');
-});
+
 
 // Handle form POST
-router.post('/ads', async (req, res) => {
-  const { title, description, price, image } = req.body;
-  const ad = new Ad({ title, description, price, image ,user: req.user._id});
+router.post('/ads', isLoggedIn, async (req, res) => {
+  const { title, description, price, image, isDonation } = req.body;
+
+  const ad = new Ad({
+    title,
+    description,
+    price: isDonation === "true" ? 0 : price,
+    image,
+    user: req.user._id,
+    isDonation: isDonation === "true"
+  });
+
   await ad.save();
   res.redirect('/');
 });

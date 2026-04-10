@@ -33,17 +33,32 @@
     <% ads.forEach(ad => { %>
       <a href="/ads/<%= ad._id %>" 
          class="product-card bg-white rounded-2xl shadow hover:shadow-lg transition hover:scale-105 overflow-hidden block"
-         data-title="<%= ad.title.toLowerCase() %>"
-         data-price="<%= ad.price %>">
+         data-title="<%= (ad.title || '').toLowerCase() %>"
+         data-price="<%= ad.price || 0 %>"
+         data-donation="<%= ad.isDonation %>">
 
+        <!-- Image + Badge -->
         <div class="relative h-48">
-          <img src="<%= ad.image %>" class="w-full h-full object-cover" />
+          <img src="<%= ad.image || '/default.jpg' %>" class="w-full h-full object-cover" />
+
+          <% if (ad.isDonation === true) { %>
+            <span class="absolute top-2 left-2 bg-green-600 text-white text-xs px-2 py-1 rounded-full shadow">
+              🎁 Donated
+            </span>
+          <% } %>
         </div>
 
+        <!-- Details -->
         <div class="p-4">
-          <h3 class="text-sm font-semibold text-gray-800 truncate"><%= ad.title %></h3>
-          <p class="text-sm text-gray-500">₹<%= ad.price %></p>
+          <h3 class="text-sm font-semibold text-gray-800 truncate">
+            <%= ad.title %>
+          </h3>
+
+          <p class="text-sm font-semibold <%= ad.isDonation ? 'text-green-600' : 'text-gray-500' %>">
+            <%= ad.isDonation ? "FREE 🎁" : "₹" + (ad.price || 0) %>
+          </p>
         </div>
+
       </a>
     <% }) %>
 
@@ -60,15 +75,19 @@
     const priceValue = priceFilter.value;
 
     products.forEach(product => {
-      const title = product.dataset.title;
-      const price = parseInt(product.dataset.price);
+      const title = product.dataset.title || "";
+      const price = parseInt(product.dataset.price) || 0;
+      const isDonation = product.dataset.donation === "true";
 
       let matchSearch = title.includes(searchValue);
       let matchPrice = true;
 
-      if (priceValue === 'low') matchPrice = price < 1000;
-      else if (priceValue === 'mid') matchPrice = price >= 1000 && price <= 5000;
-      else if (priceValue === 'high') matchPrice = price > 5000;
+      // 🎁 Always show donated items
+      if (!isDonation) {
+        if (priceValue === 'low') matchPrice = price < 1000;
+        else if (priceValue === 'mid') matchPrice = price >= 1000 && price <= 5000;
+        else if (priceValue === 'high') matchPrice = price > 5000;
+      }
 
       if (matchSearch && matchPrice) {
         product.style.display = "block";
