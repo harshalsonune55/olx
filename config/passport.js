@@ -4,9 +4,7 @@ const User = require('../models/User');
 
 module.exports = function (passport) {
 
-  // =========================
-  // ✅ LOCAL STRATEGY (NO CHANGE)
-  // =========================
+
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
@@ -23,9 +21,7 @@ module.exports = function (passport) {
     })
   );
 
-  // =========================
-  // ✅ GOOGLE STRATEGY (ADD THIS)
-  // =========================
+
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -58,9 +54,7 @@ module.exports = function (passport) {
     }
   }));
 
-  // =========================
-  // ✅ SESSION (KEEP SAME)
-  // =========================
+
   passport.serializeUser((user, done) => done(null, user.id));
 
   passport.deserializeUser(async (id, done) => {

@@ -20,11 +20,7 @@ router.post('/ads', async (req, res) => {
   await ad.save();
   res.redirect('/');
 });
-router.get('/ads/:id', async (req, res) => {
-    const ad = await Ad.findById(req.params.id);
-    if (!ad) return res.status(404).send('Ad not found');
-    res.render('ad-details', { ad });
-  });
+
 
   function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) return next();
@@ -54,8 +50,11 @@ async function isOwner(req, res, next) {
 
 // VIEW SINGLE AD
 router.get('/ads/:id', async (req, res) => {
-  const ad = await Ad.findById(req.params.id);
-  res.render('ads/show', { ad });
+  const ad = await Ad.findById(req.params.id).populate('user'); // 🔥 FIX
+
+  if (!ad) return res.status(404).send('Ad not found');
+
+  res.render('ad-details', { ad }); // make sure this matches your file
 });
 
 // EDIT FORM

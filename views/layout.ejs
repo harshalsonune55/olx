@@ -34,17 +34,35 @@
           <div class="flex items-center gap-4">
 
             <!-- Icons -->
-            <a href="/profile" title="Profile" class="text-gray-600 hover:text-blue-600 text-xl">
-              <i class="fas fa-user-circle"></i>
-            </a>
+            <div class="flex items-center gap-4">
 
-            <a href="/cart" title="Cart" class="text-gray-600 hover:text-blue-600 text-xl">
-              <i class="fas fa-shopping-cart"></i>
-            </a>
-
-            <a href="/orders" title="Orders" class="text-gray-600 hover:text-blue-600 text-xl">
-              <i class="fas fa-box"></i>
-            </a>
+              <!-- Profile -->
+              <a href="/profile" title="Profile" class="text-gray-600 hover:text-blue-600 text-xl">
+                <i class="fas fa-user-circle"></i>
+              </a>
+            
+              <!-- Inbox 🔥 -->
+              <!-- Inbox 🔥 -->
+              <a href="/inbox" title="Inbox" class="relative text-gray-600 hover:text-blue-600 text-xl">
+                <i class="fas fa-envelope"></i>
+                <span 
+                  id="inboxBadge"
+                  class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full leading-none <%= unreadCount > 0 ? '' : 'hidden' %>">
+                  <%= unreadCount > 99 ? '99+' : unreadCount %>
+                </span>
+              </a>
+            
+              <!-- Cart -->
+              <a href="/cart" title="Cart" class="text-gray-600 hover:text-blue-600 text-xl">
+                <i class="fas fa-shopping-cart"></i>
+              </a>
+            
+              <!-- Orders -->
+              <a href="/orders" title="Orders" class="text-gray-600 hover:text-blue-600 text-xl">
+                <i class="fas fa-box"></i>
+              </a>
+            
+            </div>
 
             <!-- Welcome Text + Logout -->
             <span class="text-sm font-large text-gray-700">Hi, <%= currentUser.username %></span>
@@ -59,5 +77,25 @@
   <main class="max-w-6xl mx-auto px-4 py-8">
     <%- body %>
   </main>
+  <!-- At the bottom of layout.ejs, before </body> -->
+<% if (currentUser) { %>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const _socket = io();
+    _socket.emit("join", "<%= currentUser._id %>");
+  
+    _socket.on("updateBadge", ({ count }) => {
+      const badge = document.getElementById("inboxBadge");
+      if (!badge) return;
+  
+      if (count > 0) {
+        badge.textContent = count > 99 ? "99+" : count;
+        badge.classList.remove("hidden");
+      } else {
+        badge.classList.add("hidden");
+      }
+    });
+  </script>
+  <% } %>
 </body>
 </html>

@@ -1,0 +1,119 @@
+<div class="max-w-lg mx-auto mt-6 flex flex-col h-[85vh]">
+
+    <!-- Header -->
+    <div class="flex items-center gap-3 bg-blue-600 text-white px-4 py-3 rounded-t-xl shadow">
+      <a href="/inbox" class="hover:opacity-75 transition">&#8592;</a>
+      <div class="w-9 h-9 rounded-full bg-white text-blue-600 flex items-center justify-center font-bold">
+        <%= otherUser.username[0].toUpperCase() %>
+      </div>
+      <div>
+        <div class="font-semibold"><%= otherUser.username %></div>
+        
+      </div>
+    </div>
+  
+    <!-- Chat Box -->
+    <div class="chat-box flex-1 bg-gray-50 p-4 overflow-y-auto flex flex-col gap-2">
+      <% messages.forEach(msg => { %>
+        <% const isMe = msg.sender.equals(currentUser._id); %>
+        <% const time = new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); %>
+  
+        <div class="flex <%= isMe ? 'justify-end' : 'justify-start' %>">
+          <div class="<%= isMe ? 'bg-blue-600 text-white rounded-br-none' : 'bg-white text-gray-800 rounded-bl-none' %> px-4 py-2 rounded-2xl max-w-xs shadow-sm">
+            <div class="text-sm"><%= msg.text %></div>
+            <div class="text-xs mt-1 text-right opacity-60"><%= time %></div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  
+    <!-- Input Bar -->
+    <div class="flex items-center gap-2 bg-white border-t px-4 py-3 rounded-b-xl shadow">
+      <input
+        id="messageInput"
+        class="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400"
+        placeholder="Type a message..."
+        autocomplete="off"
+      />
+      <button
+        id="sendBtn"
+        type="button"
+        class="w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center transition flex-shrink-0">
+        &#10148;
+      </button>
+    </div>
+  
+  </div>
+  
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    socket.emit("join", "<%= currentUser._id %>");
+  
+    const input = document.getElementById("messageInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const chatBox = document.querySelector(".chat-box");
+  
+    // Scroll to bottom on load
+    chatBox.scrollTop = chatBox.scrollHeight;
+  
+    if (Notification.permission !== "granted") Notification.requestPermission();
+  
+    sendBtn.addEventListener("click", sendMessage);
+    input.addEventListener("keydown", e => {
+      if (e.key === "Enter") { e.preventDefault(); sendMessage(); }
+    });
+  
+    function sendMessage() {
+      const message = input.value.trim();
+      if (!message) return;
+  
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
+      socket.emit("sendMessage", {
+        text: message,
+        receiverId: "<%= otherUser._id %>",
+        senderId: "<%= currentUser._id %>"
+      });
+  
+      appendMessage(message, time, true);
+      input.value = "";
+    }
+  
+    socket.emit("markRead", {
+  senderId: "<%= otherUser._id %>",
+  receiverId: "<%= currentUser._id %>"
+});
+
+// Also mark read when a new message arrives (user is already in chat)
+socket.on("receiveMessage", (data) => {
+  const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  appendMessage(data.text, time, false);
+
+  // 🔥 Mark as read immediately since user is actively in this chat
+  socket.emit("markRead", {
+    senderId: "<%= otherUser._id %>",
+    receiverId: "<%= currentUser._id %>"
+  });
+
+  if (Notification.permission === "granted") {
+    new Notification("<%= otherUser.username %>", { body: data.text });
+  }
+});
+  
+    function appendMessage(text, time, isMe) {
+      const div = document.createElement("div");
+      div.className = `flex ${isMe ? 'justify-end' : 'justify-start'}`;
+      div.innerHTML = `
+        <div class="${isMe
+          ? 'bg-blue-600 text-white rounded-br-none'
+          : 'bg-white text-gray-800 rounded-bl-none'
+        } px-4 py-2 rounded-2xl max-w-xs shadow-sm">
+          <div class="text-sm">${text}</div>
+          <div class="text-xs mt-1 text-right opacity-60">${time}</div>
+        </div>
+      `;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>

@@ -1,0 +1,35 @@
+<div class="max-w-lg mx-auto mt-8">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">💬 Messages</h2>
+  
+    <% if (conversations.length === 0) { %>
+      <div class="text-center text-gray-400 py-16">
+        <div class="text-5xl mb-3">📭</div>
+        <p>No conversations yet</p>
+      </div>
+    <% } else { %>
+      <div class="flex flex-col gap-3">
+        <% conversations.forEach(conv => { %>
+          <a href="/chat/<%= conv.otherUser._id %>" 
+             class="flex items-center gap-4 bg-white p-4 rounded-xl shadow hover:shadow-md transition hover:bg-blue-50">
+            
+            <!-- Avatar -->
+            <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+              <%= conv.otherUser.username[0].toUpperCase() %>
+            </div>
+  
+            <!-- Info -->
+            <div class="flex-1 min-w-0">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-gray-800"><%= conv.otherUser.username %></span>
+                <span class="text-xs text-gray-400">
+                  <%= new Date(conv.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
+                </span>
+              </div>
+              <p class="text-sm text-gray-500 truncate"><%= conv.lastMessage %></p>
+            </div>
+  
+          </a>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
