@@ -10,7 +10,7 @@
     <p class="text-gray-500 text-sm mt-1">Fill in the details below to list your item on campus.</p>
   </div>
 
-  <form action="/ads" method="POST"
+  <form action="/ads" method="POST" enctype="multipart/form-data"
         class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-6">
 
     <!-- Type -->
@@ -69,15 +69,26 @@
       </div>
     </div>
 
-    <!-- Image URL -->
+    <!-- Image Upload -->
     <div class="space-y-1.5">
-      <label class="block text-sm font-semibold text-gray-700">Image URL</label>
-      <input type="url" name="image" id="imageUrlInput" required
-             placeholder="https://example.com/image.jpg"
-             class="w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition placeholder-gray-400" />
+      <label class="block text-sm font-semibold text-gray-700">Product Image</label>
+
+      <!-- Drop zone -->
+      <label id="dropZone"
+             class="flex flex-col items-center justify-center gap-2 w-full border-2 border-dashed border-gray-200 rounded-2xl h-36 cursor-pointer bg-gray-50 hover:border-blue-400 hover:bg-blue-50 transition-all">
+        <i class="fas fa-cloud-upload-alt text-2xl text-gray-300" id="uploadIcon"></i>
+        <span class="text-sm text-gray-400" id="uploadLabel">Click or drag an image here</span>
+        <span class="text-xs text-gray-300">PNG, JPG, WEBP — max 5 MB</span>
+        <input type="file" name="image" id="imageFileInput" accept="image/*" required class="sr-only" />
+      </label>
+
       <!-- Preview -->
-      <div id="imagePreview" class="hidden mt-3 rounded-2xl overflow-hidden border border-gray-100 h-44 bg-gray-50">
+      <div id="imagePreview" class="hidden mt-3 rounded-2xl overflow-hidden border border-gray-100 h-44 bg-gray-50 relative">
         <img id="previewImg" src="" alt="Preview" class="w-full h-full object-cover" />
+        <button type="button" id="removeImage"
+                class="absolute top-2 right-2 w-7 h-7 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center text-xs transition">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
     </div>
 
@@ -105,9 +116,13 @@
   const priceWrapper = document.getElementById('priceWrapper');
   const sellLabel    = document.getElementById('sellLabel');
   const donateLabel  = document.getElementById('donateLabel');
-  const imageUrlInput = document.getElementById('imageUrlInput');
-  const imagePreview  = document.getElementById('imagePreview');
-  const previewImg    = document.getElementById('previewImg');
+  const imageFileInput = document.getElementById('imageFileInput');
+  const imagePreview   = document.getElementById('imagePreview');
+  const previewImg     = document.getElementById('previewImg');
+  const dropZone       = document.getElementById('dropZone');
+  const removeImage    = document.getElementById('removeImage');
+  const uploadIcon     = document.getElementById('uploadIcon');
+  const uploadLabel    = document.getElementById('uploadLabel');
 
   radios.forEach(radio => {
     radio.addEventListener('change', () => {
@@ -135,19 +150,43 @@
     });
   });
 
-  // Image preview
-  let previewTimer;
-  imageUrlInput.addEventListener('input', () => {
-    clearTimeout(previewTimer);
-    previewTimer = setTimeout(() => {
-      const url = imageUrlInput.value.trim();
-      if (url) {
-        previewImg.src = url;
-        previewImg.onload = () => imagePreview.classList.remove('hidden');
-        previewImg.onerror = () => imagePreview.classList.add('hidden');
-      } else {
-        imagePreview.classList.add('hidden');
-      }
-    }, 600);
+  // Image upload preview
+  function showPreview(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      previewImg.src = e.target.result;
+      imagePreview.classList.remove('hidden');
+      dropZone.classList.add('hidden');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  imageFileInput.addEventListener('change', () => {
+    showPreview(imageFileInput.files[0]);
+  });
+
+  // Drag-and-drop support
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('border-blue-400','bg-blue-50'); });
+  dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('border-blue-400','bg-blue-50'); });
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('border-blue-400','bg-blue-50');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      // Assign to input so it gets submitted
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      imageFileInput.files = dt.files;
+      showPreview(file);
+    }
+  });
+
+  // Remove / change image
+  removeImage.addEventListener('click', () => {
+    imageFileInput.value = '';
+    previewImg.src = '';
+    imagePreview.classList.add('hidden');
+    dropZone.classList.remove('hidden');
   });
 </script>
