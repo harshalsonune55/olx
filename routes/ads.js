@@ -2,23 +2,27 @@ const express = require('express');
 const Ad = require('../models/Ad');
 const router = express.Router();
 const multer = require('multer');
-const path = require('path');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'public/uploads/'),
-  filename: (req, file, cb) => {
-    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, unique + path.extname(file.originalname));
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'olx-ads',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+    transformation: [{ width: 1000, crop: 'limit' }]
   }
 });
 
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) cb(null, true);
-    else cb(new Error('Only image files are allowed'));
-  }
+  limits: { fileSize: 5 * 1024 * 1024 } // 5 MB
 });
 
 // Show all ads
@@ -32,7 +36,7 @@ router.get('/', async (req, res) => {
 // Handle form POST
 router.post('/ads', isLoggedIn, upload.single('image'), async (req, res) => {
   const { title, description, price, isDonation } = req.body;
-  const image = req.file ? '/uploads/' + req.file.filename : '/default.jpg';
+  const image = req.file ? req.file.path : '/default.jpg';
 
   const ad = new Ad({
     title,
@@ -90,9 +94,11 @@ router.get('/ads/:id/edit', isLoggedIn, isOwner, async (req, res) => {
 });
 
 // UPDATE
-router.post('/ads/:id/edit', isLoggedIn, isOwner, async (req, res) => {
-  const { title, description, price, image } = req.body;
-  await Ad.findByIdAndUpdate(req.params.id, { title, description, price, image });
+router.post('/ads/:id/edit', isLoggedIn, isOwner, upload.single('image'), async (req, res) => {
+  const { title, description, price } = req.body;
+  const updateData = { title, description, price };
+  if (req.file) updateData.image = req.file.path;
+  await Ad.findByIdAndUpdate(req.params.id, updateData);
   res.redirect(`/ads/${req.params.id}`);
 });
 
