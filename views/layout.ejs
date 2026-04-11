@@ -3,99 +3,274 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CampusFlow</title>
+  <title>CampusSwap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: {
+              50:  '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-out',
+            'slide-up': 'slideUp 0.4s ease-out',
+            'scale-in': 'scaleIn 0.2s ease-out',
+          },
+          keyframes: {
+            fadeIn:  { from: { opacity: '0' }, to: { opacity: '1' } },
+            slideUp: { from: { opacity: '0', transform: 'translateY(16px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+            scaleIn: { from: { opacity: '0', transform: 'scale(0.95)' }, to: { opacity: '1', transform: 'scale(1)' } },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    html { scroll-behavior: smooth; }
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    /* Ripple effect */
+    .ripple-btn {
+      position: relative;
+      overflow: hidden;
+    }
+    .ripple-span {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      transform: scale(0);
+      pointer-events: none;
+      animation: ripple 0.55s ease-out forwards;
+    }
+    @keyframes ripple {
+      0%   { transform: scale(0); opacity: 1; }
+      100% { transform: scale(4); opacity: 0; }
+    }
+
+    /* Smooth page fade-in */
+    main { animation: fadeIn 0.35s ease-out; }
+
+    /* Nav link active state */
+    .nav-link {
+      position: relative;
+      transition: color 0.2s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0; right: 0;
+      height: 2px;
+      background: #2563eb;
+      transform: scaleX(0);
+      transition: transform 0.2s ease;
+      border-radius: 2px;
+    }
+    .nav-link:hover::after { transform: scaleX(1); }
+
+    /* Glassmorphism header */
+    .glass-header {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: rgba(255,255,255,0.92);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    /* Toast */
+    #toast {
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    #toast.show {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+    }
+  </style>
 </head>
-<script src="https://cdn.tailwindcss.com"></script>
-<body class="bg-gray-100 text-gray-800">
-  
-  <!-- Header with Navbar -->
-  <header class="bg-white shadow">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-      
+<body class="bg-gray-50 text-gray-800 min-h-screen">
+
+  <!-- Sticky Header -->
+  <header class="glass-header sticky top-0 z-50 border-b border-gray-200/70 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center gap-4">
+
       <!-- Logo -->
-      <a href="/" class="text-2xl font-bold text-blue-600">Campus Swap</a>
+      <a href="/" class="flex items-center gap-2 group">
+        <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+          <i class="fas fa-store text-white text-sm"></i>
+        </div>
+        <span class="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          CampusSwap
+        </span>
+      </a>
 
       <!-- Right Side Nav -->
-      <div class="flex items-center gap-6">
+      <div class="flex items-center gap-3">
 
-        <!-- Show Post Ad for all -->
-        <a href="/ads/new" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-          + Post Ad
+        <!-- Post Ad Button -->
+        <a href="/ads/new"
+           class="ripple-btn hidden sm:flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-xl font-medium text-sm hover:shadow-lg hover:shadow-blue-200 transition-all duration-200 hover:-translate-y-0.5 active:scale-95">
+          <i class="fas fa-plus text-xs"></i>
+          Post Ad
         </a>
 
         <% if (!currentUser) { %>
-          <!-- If not logged in -->
-          <a href="/login" class="text-blue-600 font-medium hover:underline">Login</a>
-          <a href="/register" class="text-blue-600 font-medium hover:underline">Register</a>
+          <a href="/login" class="nav-link text-sm font-medium text-gray-600 hover:text-blue-600 px-1">Login</a>
+          <a href="/register"
+             class="ripple-btn bg-blue-50 text-blue-600 border border-blue-200 px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-100 transition-all duration-200 active:scale-95">
+            Register
+          </a>
         <% } else { %>
-          <!-- If logged in -->
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-1">
 
-            <!-- Icons -->
-            <div class="flex items-center gap-4">
+            <!-- Post Ad mobile -->
+            <a href="/ads/new"
+               class="ripple-btn sm:hidden flex items-center justify-center w-9 h-9 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition active:scale-95">
+              <i class="fas fa-plus text-sm"></i>
+            </a>
 
-              <!-- Profile -->
-              <a href="/profile" title="Profile" class="text-gray-600 hover:text-blue-600 text-xl">
-                <i class="fas fa-user-circle"></i>
-              </a>
-            
-              <!-- Inbox 🔥 -->
-              <!-- Inbox 🔥 -->
-              <a href="/inbox" title="Inbox" class="relative text-gray-600 hover:text-blue-600 text-xl">
-                <i class="fas fa-envelope"></i>
-                <span 
-                  id="inboxBadge"
-                  class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full leading-none <%= unreadCount > 0 ? '' : 'hidden' %>">
-                  <%= unreadCount > 99 ? '99+' : unreadCount %>
-                </span>
-              </a>
-            
-              <!-- Cart -->
-              <a href="/cart" title="Cart" class="text-gray-600 hover:text-blue-600 text-xl">
-                <i class="fas fa-shopping-cart"></i>
-              </a>
-            
-              <!-- Orders -->
-              <a href="/orders" title="Orders" class="text-gray-600 hover:text-blue-600 text-xl">
-                <i class="fas fa-box"></i>
-              </a>
-            
+            <!-- Inbox -->
+            <a href="/inbox" title="Inbox"
+               class="relative flex items-center justify-center w-9 h-9 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200">
+              <i class="fas fa-envelope text-base"></i>
+              <span id="inboxBadge"
+                    class="absolute top-0.5 right-0.5 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold <%= unreadCount > 0 ? '' : 'hidden' %>">
+                <%= unreadCount > 9 ? '9+' : unreadCount %>
+              </span>
+            </a>
+
+            <!-- Cart -->
+            <a href="/cart" title="Cart"
+               class="flex items-center justify-center w-9 h-9 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200">
+              <i class="fas fa-shopping-bag text-base"></i>
+            </a>
+
+            <!-- Orders -->
+            <a href="/orders" title="Orders"
+               class="flex items-center justify-center w-9 h-9 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200">
+              <i class="fas fa-box text-base"></i>
+            </a>
+
+            <!-- Profile dropdown -->
+            <div class="relative group">
+              <button class="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl hover:bg-gray-100 transition-all duration-200 cursor-pointer">
+                <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                  <%= currentUser.username[0].toUpperCase() %>
+                </div>
+                <span class="text-sm font-medium text-gray-700 hidden sm:block"><%= currentUser.username %></span>
+                <i class="fas fa-chevron-down text-xs text-gray-400 hidden sm:block transition-transform group-hover:rotate-180 duration-200"></i>
+              </button>
+
+              <!-- Dropdown -->
+              <div class="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-y-1 group-hover:translate-y-0 z-50">
+                <a href="/profile"
+                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
+                  <i class="fas fa-user-circle w-4 text-gray-400"></i>
+                  Profile
+                </a>
+                <a href="/orders"
+                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
+                  <i class="fas fa-box w-4 text-gray-400"></i>
+                  My Orders
+                </a>
+                <a href="/cart"
+                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
+                  <i class="fas fa-shopping-bag w-4 text-gray-400"></i>
+                  Cart
+                </a>
+                <hr class="my-1.5 border-gray-100">
+                <a href="/logout"
+                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                  <i class="fas fa-sign-out-alt w-4"></i>
+                  Logout
+                </a>
+              </div>
             </div>
-
-            <!-- Welcome Text + Logout -->
-            <span class="text-sm font-large text-gray-700">Hi, <%= currentUser.username %></span>
-            <a href="/logout" class="bg-red-600 text-white px-4 py-3 rounded hover:bg-red-700 transition text-sm">Logout</a>
           </div>
         <% } %>
       </div>
     </div>
   </header>
 
+  <!-- Toast Notification -->
+  <div id="toast"
+       class="fixed bottom-6 right-6 z-[100] bg-gray-900 text-white text-sm px-5 py-3 rounded-2xl shadow-2xl opacity-0 pointer-events-none"
+       style="transform: translateY(12px);">
+    <span id="toastMsg"></span>
+  </div>
+
   <!-- Main Body -->
-  <main class="max-w-6xl mx-auto px-4 py-8">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 animate-slide-up">
     <%- body %>
   </main>
-  <!-- At the bottom of layout.ejs, before </body> -->
+
+  <!-- Footer -->
+  <footer class="mt-16 border-t border-gray-200 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-md flex items-center justify-center">
+          <i class="fas fa-store text-white text-[10px]"></i>
+        </div>
+        <span class="text-sm font-semibold text-gray-600">CampusSwap</span>
+      </div>
+      <p class="text-xs text-gray-400">MITAOE Campus Marketplace &mdash; Buy, sell, and donate with fellow students</p>
+    </div>
+  </footer>
+
 <% if (currentUser) { %>
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const _socket = io();
     _socket.emit("join", "<%= currentUser._id %>");
-  
     _socket.on("updateBadge", ({ count }) => {
       const badge = document.getElementById("inboxBadge");
       if (!badge) return;
-  
       if (count > 0) {
-        badge.textContent = count > 99 ? "99+" : count;
+        badge.textContent = count > 9 ? "9+" : count;
         badge.classList.remove("hidden");
       } else {
         badge.classList.add("hidden");
       }
     });
   </script>
-  <% } %>
+<% } %>
+
+<script>
+  // Ripple effect
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.ripple-btn');
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height) * 2;
+    const span = document.createElement('span');
+    span.className = 'ripple-span';
+    span.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX - rect.left - size/2}px;top:${e.clientY - rect.top - size/2}px`;
+    btn.appendChild(span);
+    setTimeout(() => span.remove(), 600);
+  });
+
+  // Global toast helper
+  function showToast(msg, duration = 2500) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), duration);
+  }
+</script>
 </body>
 </html>

@@ -1,96 +1,135 @@
-<div class="grid md:grid-cols-2 bg-white shadow-2xl rounded-2xl overflow-hidden max-w-6xl mx-auto">
-  <!-- Left Side: Branding -->
-  <div class="bg-blue-600 text-white p-10 hidden md:flex flex-col justify-between">
-    <div>
-      <h1 class="text-4xl font-bold mb-4 flex items-center">
-        <span class="w-10 h-10 bg-white/20 rounded-xl inline-block mr-3"></span>
-        CampusFlow
-      </h1>
-      <p class="text-lg font-light">
-        Your campus marketplace for buying & selling everything students need.
+<div class="min-h-[80vh] flex items-center justify-center py-8 animate-slide-up">
+  <div class="grid md:grid-cols-2 bg-white shadow-2xl shadow-gray-200/60 rounded-3xl overflow-hidden w-full max-w-4xl">
+
+    <!-- Left: Branding Panel -->
+    <div class="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white p-10 hidden md:flex flex-col justify-between relative overflow-hidden">
+      <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+      <div class="absolute -bottom-12 -left-12 w-56 h-56 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10">
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+            <i class="fas fa-store text-white"></i>
+          </div>
+          <span class="text-2xl font-bold">CampusSwap</span>
+        </div>
+        <h2 class="text-3xl font-extrabold mb-3 leading-tight">Your Campus<br>Marketplace</h2>
+        <p class="text-blue-200 text-sm leading-relaxed">
+          Buy, sell, and donate with verified students — all in one trusted platform.
+        </p>
+      </div>
+
+      <div class="relative z-10 space-y-4">
+        <div class="flex items-center gap-3 text-white/90 text-sm">
+          <div class="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">📚</div>
+          Books, notes &amp; materials
+        </div>
+        <div class="flex items-center gap-3 text-white/90 text-sm">
+          <div class="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">💻</div>
+          Electronics &amp; gadgets
+        </div>
+        <div class="flex items-center gap-3 text-white/90 text-sm">
+          <div class="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">🎒</div>
+          Campus essentials
+        </div>
+        <div class="flex items-center gap-3 text-white/90 text-sm">
+          <div class="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">🔒</div>
+          Verified students only
+        </div>
+      </div>
+
+      <p class="relative z-10 text-xs text-white/50 mt-8">Trusted by MITAOE students</p>
+    </div>
+
+    <!-- Right: Login Form -->
+    <div class="p-8 sm:p-10 flex flex-col justify-center">
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-1">Welcome back</h2>
+        <p class="text-gray-500 text-sm">
+          New here?
+          <a href="/register" class="text-blue-600 font-semibold hover:underline">Create a free account</a>
+        </p>
+      </div>
+
+      <form action="/login" method="POST" class="space-y-4">
+
+        <div class="space-y-1.5">
+          <label for="username" class="block text-sm font-semibold text-gray-700">Username</label>
+          <div class="relative">
+            <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
+            <input type="text" name="username" id="username" required
+                   placeholder="Enter your username"
+                   class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition placeholder-gray-400" />
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="password" class="block text-sm font-semibold text-gray-700">Password</label>
+          <div class="relative">
+            <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
+            <input type="password" name="password" id="password" required
+                   placeholder="••••••••"
+                   class="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition placeholder-gray-400" />
+            <button type="button" id="togglePass"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
+              <i class="fas fa-eye text-sm"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-sm">
+          <label class="flex items-center gap-2 cursor-pointer select-none">
+            <input type="checkbox" name="remember" class="w-4 h-4 rounded border-gray-300 text-blue-600 cursor-pointer" />
+            <span class="text-gray-600">Remember me</span>
+          </label>
+          <a href="/forgot" class="text-blue-600 hover:underline font-medium">Forgot password?</a>
+        </div>
+
+        <button type="submit"
+                class="ripple-btn w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3.5 rounded-2xl font-semibold text-sm hover:shadow-lg hover:shadow-blue-200 transition-all duration-200 hover:-translate-y-0.5 active:scale-95">
+          Sign in
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="my-6 flex items-center gap-3">
+        <hr class="flex-grow border-gray-200" />
+        <span class="text-xs text-gray-400 font-medium">or continue with</span>
+        <hr class="flex-grow border-gray-200" />
+      </div>
+
+      <!-- Social logins -->
+      <div class="grid grid-cols-2 gap-3">
+        <a href="/auth/google"
+           class="ripple-btn flex items-center justify-center gap-2 border border-gray-200 py-2.5 rounded-2xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 active:scale-95">
+          <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="w-4 h-4" />
+          Google
+        </a>
+        <button type="button"
+                class="ripple-btn flex items-center justify-center gap-2 border border-gray-200 py-2.5 rounded-2xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 active:scale-95">
+          <i class="fas fa-mobile-alt text-blue-500"></i>
+          Mobile
+        </button>
+      </div>
+
+      <p class="text-center text-xs text-gray-400 mt-6">
+        Don't have an account?
+        <a href="/register" class="text-blue-600 font-medium hover:underline">Sign up free</a>
       </p>
     </div>
-    <div class="mt-10 space-y-4">
-      <p class="flex items-center gap-3 text-white/90">📚 Books, notes & materials</p>
-      <p class="flex items-center gap-3 text-white/90">💻 Electronics & gadgets</p>
-      <p class="flex items-center gap-3 text-white/90">🎒 Campus essentials</p>
-      <p class="flex items-center gap-3 text-white/90">🔒 Verified students only</p>
-    </div>
-    <p class="text-sm text-white/70 mt-10">Trusted by 10,000+ students</p>
-  </div>
-
-  <!-- Right Side: Login Form -->
-  <div class="p-10 flex flex-col justify-center w-full">
-    <h2 class="text-3xl font-bold mb-2">Welcome back</h2>
-    <p class="text-gray-500 mb-8">
-      New to CampusFlow?
-      <a href="/register" class="text-blue-600 font-semibold hover:underline">Create account</a>
-    </p>
-
-    <form action="/login" method="POST" class="space-y-5">
-      <div>
-        <label for="username" class="block mb-1 text-sm font-medium">Username</label>
-        <input
-          type="text"
-          name="username"
-          id="username"
-          required
-          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Enter your username"
-        />
-      </div>
-
-      <div>
-        <label for="password" class="block mb-1 text-sm font-medium">Password</label>
-        <input
-          type="password"
-          name="password"
-          id="password"
-          required
-          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="••••••••"
-        />
-      </div>
-
-      <div class="flex items-center justify-between">
-        <label class="flex items-center text-sm">
-          <input type="checkbox" name="remember" class="mr-2" />
-          Remember me
-        </label>
-        <a href="/forgot" class="text-sm text-blue-600 hover:underline">Forgot password?</a>
-      </div>
-
-      <button
-        type="submit"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition"
-      >
-        Sign in
-      </button>
-    </form>
-
-    <div class="my-6 flex items-center gap-4">
-      <hr class="flex-grow border-gray-300" />
-      <span class="text-gray-400 text-sm">or</span>
-      <hr class="flex-grow border-gray-300" />
-    </div>
-
-    <div class="grid grid-cols-2 gap-4">
-      <a href="/auth/google"
-  class="flex items-center justify-center gap-2 border border-gray-300 py-2 rounded-lg hover:bg-gray-100 transition">
-        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="w-5 h-5" />
-        Google
-      </a>
-      <button
-        type="button"
-        class="flex items-center justify-center gap-2 border border-gray-300 py-2 rounded-lg hover:bg-gray-100 transition"
-      >
-        📱 Mobile Number
-      </button>
-    </div>
-
-    <p class="text-center text-sm text-gray-500 mt-8">
-      Don't have an account?
-      <a href="/register" class="text-blue-600 font-medium hover:underline">Sign up</a>
-    </p>
   </div>
 </div>
+
+<script>
+  document.getElementById('togglePass').addEventListener('click', function() {
+    const pass = document.getElementById('password');
+    const icon = this.querySelector('i');
+    if (pass.type === 'password') {
+      pass.type = 'text';
+      icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+      pass.type = 'password';
+      icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+  });
+</script>

@@ -1,50 +1,153 @@
+<div class="max-w-2xl mx-auto animate-slide-up">
 
-
-<h1 class="text-3xl font-semibold mb-6">Post a New Ad</h1>
-
-
-<form action="/ads" method="POST" class="bg-white p-6 rounded shadow space-y-4 max-w-2xl">
-  <div>
-    <label class="block mb-1 font-medium">Type</label>
-    <select name="isDonation" id="donationSelect" class="w-full border px-3 py-2 rounded">
-      <option value="false">Sell Item</option>
-      <option value="true">Donate Item</option>
-    </select>
-  </div>
-  <div>
-    <label class="block mb-1 font-medium">Title</label>
-    <input type="text" name="title" required class="w-full border px-3 py-2 rounded" />
+  <!-- Header -->
+  <div class="mb-8">
+    <a href="/" class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-blue-600 transition-colors mb-4 group">
+      <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+      Back
+    </a>
+    <h1 class="text-2xl font-bold text-gray-900">Post a New Listing</h1>
+    <p class="text-gray-500 text-sm mt-1">Fill in the details below to list your item on campus.</p>
   </div>
 
-  <div>
-    <label class="block mb-1 font-medium">Description</label>
-    <textarea name="description" rows="4" required class="w-full border px-3 py-2 rounded"></textarea>
-  </div>
+  <form action="/ads" method="POST"
+        class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-6">
 
-  <div>
-    <label class="block mb-1 font-medium">Price</label>
-    <input type="number" name="price" required class="w-full border px-3 py-2 rounded" />
-  </div>
+    <!-- Type -->
+    <div class="grid grid-cols-2 gap-3">
+      <label id="sellLabel"
+             class="listing-type-option selected-type relative cursor-pointer flex flex-col items-center gap-2 border-2 rounded-2xl p-4 transition-all duration-200">
+        <input type="radio" name="isDonation" value="false" class="sr-only" checked />
+        <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+          <i class="fas fa-tag text-blue-600"></i>
+        </div>
+        <span class="text-sm font-semibold text-gray-800">Sell Item</span>
+        <span class="text-xs text-gray-400">Set your price</span>
+        <div class="check-mark hidden absolute top-2.5 right-2.5 w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
+          <i class="fas fa-check text-white text-[10px]"></i>
+        </div>
+      </label>
 
-  <div>
-    <label class="block mb-1 font-medium">Image URL</label>
-    <input type="url" name="image" placeholder="https://example.com/image.jpg" required class="w-full border px-3 py-2 rounded" />
-  </div>
+      <label id="donateLabel"
+             class="listing-type-option relative cursor-pointer flex flex-col items-center gap-2 border-2 rounded-2xl p-4 transition-all duration-200">
+        <input type="radio" name="isDonation" value="true" class="sr-only" />
+        <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+          <i class="fas fa-gift text-emerald-600"></i>
+        </div>
+        <span class="text-sm font-semibold text-gray-800">Donate Item</span>
+        <span class="text-xs text-gray-400">Give it away free</span>
+        <div class="check-mark hidden absolute top-2.5 right-2.5 w-5 h-5 bg-emerald-600 rounded-full flex items-center justify-center">
+          <i class="fas fa-check text-white text-[10px]"></i>
+        </div>
+      </label>
+    </div>
 
-  <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-    Submit Ad
-  </button>
-</form>
+    <!-- Title -->
+    <div class="space-y-1.5">
+      <label class="block text-sm font-semibold text-gray-700">Title</label>
+      <input type="text" name="title" required
+             placeholder="e.g. Engineering Mathematics Textbook"
+             class="w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition placeholder-gray-400" />
+    </div>
+
+    <!-- Description -->
+    <div class="space-y-1.5">
+      <label class="block text-sm font-semibold text-gray-700">Description</label>
+      <textarea name="description" rows="3" required
+                placeholder="Describe the condition, usage, and any other details..."
+                class="w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition placeholder-gray-400 resize-none"></textarea>
+    </div>
+
+    <!-- Price -->
+    <div id="priceWrapper" class="space-y-1.5">
+      <label class="block text-sm font-semibold text-gray-700">Price</label>
+      <div class="relative">
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-semibold text-sm">₹</span>
+        <input type="number" name="price" id="priceInput" required min="0"
+               placeholder="0"
+               class="w-full pl-8 pr-4 py-3 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+      </div>
+    </div>
+
+    <!-- Image URL -->
+    <div class="space-y-1.5">
+      <label class="block text-sm font-semibold text-gray-700">Image URL</label>
+      <input type="url" name="image" id="imageUrlInput" required
+             placeholder="https://example.com/image.jpg"
+             class="w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition placeholder-gray-400" />
+      <!-- Preview -->
+      <div id="imagePreview" class="hidden mt-3 rounded-2xl overflow-hidden border border-gray-100 h-44 bg-gray-50">
+        <img id="previewImg" src="" alt="Preview" class="w-full h-full object-cover" />
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit"
+            class="ripple-btn w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3.5 rounded-2xl font-semibold text-sm hover:shadow-lg hover:shadow-blue-200 transition-all duration-200 hover:-translate-y-0.5 active:scale-95">
+      <i class="fas fa-plus mr-2"></i>Post Listing
+    </button>
+
+  </form>
+</div>
+
+<style>
+  .listing-type-option { border-color: #e5e7eb; }
+  .listing-type-option:hover { border-color: #3b82f6; background: #eff6ff; }
+  .selected-type { border-color: #2563eb !important; background: #eff6ff; }
+  .selected-type .check-mark { display: flex !important; }
+  #donateLabel.selected-type { border-color: #10b981 !important; background: #f0fdf4; }
+  #donateLabel.selected-type .check-mark { display: flex !important; }
+</style>
+
 <script>
-  const donationSelect = document.getElementById("donationSelect");
-  const priceInput = document.querySelector("input[name='price']");
+  const radios       = document.querySelectorAll('input[name="isDonation"]');
+  const priceInput   = document.getElementById('priceInput');
+  const priceWrapper = document.getElementById('priceWrapper');
+  const sellLabel    = document.getElementById('sellLabel');
+  const donateLabel  = document.getElementById('donateLabel');
+  const imageUrlInput = document.getElementById('imageUrlInput');
+  const imagePreview  = document.getElementById('imagePreview');
+  const previewImg    = document.getElementById('previewImg');
 
-  donationSelect.addEventListener("change", () => {
-    if (donationSelect.value === "true") {
-      priceInput.value = 0;
-      priceInput.disabled = true;
-    } else {
-      priceInput.disabled = false;
-    }
+  radios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      const isDonation = radio.value === 'true';
+      sellLabel.classList.toggle('selected-type', !isDonation);
+      donateLabel.classList.toggle('selected-type', isDonation);
+      if (isDonation) {
+        priceInput.value = 0;
+        priceInput.disabled = true;
+        priceWrapper.style.opacity = '0.4';
+        priceWrapper.style.pointerEvents = 'none';
+      } else {
+        priceInput.disabled = false;
+        priceWrapper.style.opacity = '1';
+        priceWrapper.style.pointerEvents = '';
+      }
+    });
+  });
+
+  // Click entire label area
+  [sellLabel, donateLabel].forEach(label => {
+    label.addEventListener('click', () => {
+      label.querySelector('input[type=radio]').checked = true;
+      label.querySelector('input[type=radio]').dispatchEvent(new Event('change'));
+    });
+  });
+
+  // Image preview
+  let previewTimer;
+  imageUrlInput.addEventListener('input', () => {
+    clearTimeout(previewTimer);
+    previewTimer = setTimeout(() => {
+      const url = imageUrlInput.value.trim();
+      if (url) {
+        previewImg.src = url;
+        previewImg.onload = () => imagePreview.classList.remove('hidden');
+        previewImg.onerror = () => imagePreview.classList.add('hidden');
+      } else {
+        imagePreview.classList.add('hidden');
+      }
+    }, 600);
   });
 </script>

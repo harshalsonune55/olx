@@ -1,51 +1,96 @@
-\
+<div class="min-h-[80vh] flex items-center justify-center py-8 animate-slide-up">
+  <div class="bg-white rounded-3xl shadow-2xl shadow-gray-200/60 w-full max-w-md p-8 sm:p-10">
 
-<div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-  <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-8 space-y-6">
-    
-    <h2 class="text-3xl font-bold text-center text-blue-600">Register</h2>
-    <p class="text-center text-gray-500 text-sm">Create a new CampusFlow account</p>
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-200">
+        <i class="fas fa-store text-white text-xl"></i>
+      </div>
+      <h2 class="text-2xl font-bold text-gray-900">Create your account</h2>
+      <p class="text-gray-500 text-sm mt-1">Join the MITAOE campus marketplace</p>
+    </div>
 
-    <form action="/register" method="POST" class="space-y-5">
+    <form action="/register" method="POST" class="space-y-4">
 
-      <div>
-        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          required
-          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Enter your username"
-        />
+      <div class="space-y-1.5">
+        <label for="username" class="block text-sm font-semibold text-gray-700">Username</label>
+        <div class="relative">
+          <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
+          <input type="text" id="username" name="username" required
+                 placeholder="Choose a username"
+                 class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition placeholder-gray-400" />
+        </div>
       </div>
 
-      <div>
-        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          required
-          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="••••••••"
-        />
+      <div class="space-y-1.5">
+        <label for="password" class="block text-sm font-semibold text-gray-700">Password</label>
+        <div class="relative">
+          <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
+          <input type="password" id="password" name="password" required
+                 placeholder="Create a strong password"
+                 class="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition placeholder-gray-400" />
+          <button type="button" id="togglePass"
+                  class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
+            <i class="fas fa-eye text-sm"></i>
+          </button>
+        </div>
+        <!-- Strength indicator -->
+        <div id="strengthBar" class="h-1 rounded-full bg-gray-100 overflow-hidden">
+          <div id="strengthFill" class="h-full rounded-full transition-all duration-300 w-0"></div>
+        </div>
+        <p id="strengthText" class="text-xs text-gray-400"></p>
       </div>
 
-      <button
-        type="submit"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition"
-      >
-        Register
+      <button type="submit"
+              class="ripple-btn w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3.5 rounded-2xl font-semibold text-sm hover:shadow-lg hover:shadow-blue-200 transition-all duration-200 hover:-translate-y-0.5 active:scale-95 mt-2">
+        Create Account
       </button>
 
     </form>
 
-    <p class="text-center text-sm text-gray-500 mt-4">
+    <p class="text-center text-xs text-gray-400 mt-6">
       Already have an account?
-      <a href="/login" class="text-blue-600 font-medium hover:underline">Login</a>
+      <a href="/login" class="text-blue-600 font-medium hover:underline">Sign in</a>
     </p>
   </div>
 </div>
 
+<script>
+  document.getElementById('togglePass').addEventListener('click', function() {
+    const pass = document.getElementById('password');
+    const icon = this.querySelector('i');
+    if (pass.type === 'password') {
+      pass.type = 'text';
+      icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+      pass.type = 'password';
+      icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+  });
 
+  // Password strength
+  document.getElementById('password').addEventListener('input', function() {
+    const val  = this.value;
+    const fill = document.getElementById('strengthFill');
+    const text = document.getElementById('strengthText');
+    let strength = 0;
+    if (val.length >= 6)  strength++;
+    if (val.length >= 10) strength++;
+    if (/[A-Z]/.test(val)) strength++;
+    if (/[0-9]/.test(val)) strength++;
+    if (/[^A-Za-z0-9]/.test(val)) strength++;
+
+    const levels = [
+      { w: '0%',   color: '',              label: '' },
+      { w: '25%',  color: 'bg-red-400',    label: 'Weak' },
+      { w: '50%',  color: 'bg-orange-400', label: 'Fair' },
+      { w: '75%',  color: 'bg-yellow-400', label: 'Good' },
+      { w: '90%',  color: 'bg-green-400',  label: 'Strong' },
+      { w: '100%', color: 'bg-emerald-500',label: 'Very strong' },
+    ];
+    const level = levels[Math.min(strength, 5)];
+    fill.style.width = level.w;
+    fill.className = 'h-full rounded-full transition-all duration-300 ' + level.color;
+    text.textContent = val.length > 0 ? level.label : '';
+  });
+</script>
